@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio Comprehension Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .audio-box {
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1> Q Skills Intro L&S - Page 3</h1>
+<h2 style="color: blue;">Listen to Audio 1 and Audio 2, and answer the question below.</h2>
+
+<!-- QUIZ CONTENT -->
+<div id="quiz"></div>
+
+<div class="feedback" id="feedback" aria-live="polite"></div>
+
+<div class="nav-buttons">
+  <button onclick="prevQuestion()" id="prevBtn">Previous</button>
+  <button onclick="checkAnswer()">Check Answer</button>
+  <button onclick="nextQuestion()" id="nextBtn">Next</button>
+</div>
+
+<script>
+/* =========================
+   SAMPLE DATA (READY TO TEST)
+   ========================= */
+
+const questions = [
+  {
+    // 1
+    audioMain: "teacher_una_Q1.mp3",
+    audioQuestion: "una_teacher_A1.mp3",
+    questionText: "What are they talking about?",
+    options: [
+      "Hobbies and interests",
+      "Rules of a game",
+      "School exams"
+    ],
+    answer: 0
+  },
+  {
+    // 2
+    audioMain: "teacher_felix_Q1.mp3",
+    audioQuestion: "felix_teacher_A1.mp3",
+    questionText: "What is Felix interested in?",
+    options: [
+      "Cooking",
+      "Playing soccer",
+      "Languages"
+    ],
+    answer: 2
+  },
+  {
+    // 3
+    audioMain: "teacher_marcus_Q1.mp3",
+    audioQuestion: "marcus_teacher_A1.mp3",
+    questionText: "What is Marcus interested in?",
+    options: [
+      "Sports",
+      "Only sports soccer",
+      "Languages"
+    ],
+    answer: 0
+  },
+  
+  {
+    // 4
+    audioMain: "teacher_marcus_Q2.mp3",
+    audioQuestion: "marcus_teacher_A2.mp3",
+    questionText: "What is his favorite sport?",
+    options: [
+      "Basketball",
+      "Tennis",
+      "Soccer"
+    ],
+    answer: 2
+  },
+  // --------------------- more 
+  {
+    // 5
+    audioMain: "teacher_sophy_Q1.mp3",
+    audioQuestion: "sophy_teacher_A1.mp3",
+    questionText: "What is Sophy interested in?",
+    options: [
+      "Sports",
+      "History",
+      "Math"
+    ],
+    answer: 1
+  },
+  
+];
+
+/* =========================
+   DO NOT CHANGE BELOW
+   ========================= */
+
+let currentQuestion = 0;
+let userAnswers = [];
+
+function loadQuestion() {
+  const q = questions[currentQuestion];
+
+  let html = `
+    <p><strong>Question ${currentQuestion + 1} of ${questions.length}</strong></p>
+
+    <div class="audio-box">
+      <p><strong>Audio 1:</strong></p>
+      <audio controls>
+        <source src="${q.audioMain}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  `;
+
+  if (q.audioQuestion) {
+    html += `
+      <div class="audio-box">
+        <p><strong>Audio 2:</strong></p>
+        <audio controls>
+          <source src="${q.audioQuestion}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    `;
+  }
+
+  html += `<p>${q.questionText}</p>`;
+
+  q.options.forEach((option, index) => {
+    html += `
+      <label>
+        <input type="radio" name="answer" value="${index}"
+          ${userAnswers[currentQuestion] == index ? "checked" : ""}>
+        ${option}
+      </label><br>
+    `;
+  });
+
+  document.getElementById("quiz").innerHTML = html;
+  document.getElementById("feedback").textContent = "";
+
+  document.getElementById("prevBtn").disabled = currentQuestion === 0;
+  document.getElementById("nextBtn").disabled = currentQuestion === questions.length - 1;
+}
+
+function checkAnswer() {
+  const selected = document.querySelector('input[name="answer"]:checked');
+
+  if (!selected) {
+    document.getElementById("feedback").textContent = "Please select an answer.";
+    return;
+  }
+
+  const answer = parseInt(selected.value);
+  userAnswers[currentQuestion] = answer;
+
+  if (answer === questions[currentQuestion].answer) {
+    document.getElementById("feedback").textContent = "Correct ✔️";
+  } else {
+    document.getElementById("feedback").textContent = "Incorrect ❌";
+  }
+}
+
+function nextQuestion() {
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    loadQuestion();
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion();
+  }
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
